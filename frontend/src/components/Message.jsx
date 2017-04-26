@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react'
 import styled from 'styled-components'
 
+import smile from './assets/smile.png'
+import wink from './assets/wink.png'
+
 const MessageContainer = styled.div`
   clear: both;
   overflow: auto;
@@ -18,6 +21,11 @@ const StyledMessage = styled.div`
   box-shadow: -1px 1px 2px 0 rgba(0, 0, 0, 0.2);
   float: left;
   max-width: 300px;
+
+  img {
+    height: 18px;
+    line-height: 18px;
+  }
 
   &:before {
     content: '';
@@ -73,7 +81,13 @@ const StyledMessage = styled.div`
 const Message = ({ children, modifiers, isOutgoing }) => (
   <MessageContainer>
     <StyledMessage className={[isOutgoing && 'outgoing', ...modifiers].join(' ')}>
-      {children}
+      <span
+        dangerouslySetInnerHTML={{
+          __html : children
+            .replace('(smile)', `<img src="${smile}"" alt="smile" />`)
+            .replace('(wink)', `<img src="${wink}"" alt="wink" />`)
+        }}
+      />
     </StyledMessage>
   </MessageContainer>
 );
