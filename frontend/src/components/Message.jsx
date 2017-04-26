@@ -76,6 +76,10 @@ const StyledMessage = styled.div`
     font-size: calc(100% + 10%);
     // TODO: make the background 10% darker
   }
+
+  &.fade {
+    opacity: 0.1;
+  }
 `
 
 const Message = ({ children, modifiers, isOutgoing }) => (
@@ -96,7 +100,7 @@ Message.propTypes = {
   children: PropTypes.string.isRequired,
   isOutgoing: PropTypes.bool,
   modifiers: PropTypes.arrayOf(
-    PropTypes.oneOf(['think', 'highlight'])
+    PropTypes.oneOf(['think', 'highlight', 'fade'])
   ),
 }
 
