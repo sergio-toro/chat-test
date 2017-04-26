@@ -1,0 +1,30 @@
+{
+  "name": "Backend",
+  "version": "1.0.0",
+  "description": "Node.js backend",
+  "author": "Sergio Toro <sergio.toro.castano@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "test": "standard $(find ./src ./index.js -path '*.js') --verbose | snazzy && mocha $(find ./test -path '*.test.js')",
+    "standard-fix": "standard $(find ./src ./index.js -path '*.js') --verbose --fix | snazzy"
+  },
+  "dependencies": {
+    "socket.io": "^1.7.3",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "snazzy": "^7.0.0",
+    "socket.io-client": "^1.7.3",
+    "standard": "^10.0.2"
+  },
+  "standard": {
+    "globals": [
+      "describe",
+      "it",
+      "afterEach"
+    ]
+  }
+}

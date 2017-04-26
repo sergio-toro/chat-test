@@ -1,0 +1,31 @@
+version: '2'
+services:
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    command: ["nodemon", "--debug=5858"]
+    ports:
+      - "3500:3500"
+    volumes:
+      - ./backend:/backend
+      - /backend/node_modules
+    environment:
+      - SOCKET_PORT=3500
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - "3000:3000"
+      - "9009:9009"
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+    depends_on:
+      - backend
+    environment:
+      - PORT=3000
+      - REACT_APP_CHAT_URL=ws://localhost:3500
