@@ -1,0 +1,89 @@
+import React, { PropTypes } from 'react'
+import styled from 'styled-components'
+import { noop } from 'lodash'
+
+import Header from './Header'
+import Message from './Message'
+import ChatInput from './ChatInput'
+
+const ChatContainer = styled.div`
+  position: relative;
+  background: #ECE5DD;
+`
+
+const MessagesContainer = styled.div`
+  position: relative;
+  padding: 10px;
+  height: calc(100% - 38px - 80px);
+`
+const InputContainer = styled.div`
+  padding: 10px;
+`
+const ChatInterface = (props) => {
+  const {
+    messages,
+    chattingWith,
+    user,
+    onSendMessage,
+    onSendThinkMessage,
+    onSetNick,
+    onRemoveLast,
+  } = props
+
+  return (
+    <ChatContainer>
+      <Header>{chattingWith.nickname}</Header>
+      <MessagesContainer>
+        {messages.map(({ message, userId }, index) => (
+          <Message
+            key={index}
+            isOutgoing={userId === user.id}
+          >
+            {message}
+          </Message>
+        ))}
+      </MessagesContainer>
+      <InputContainer>
+        <ChatInput
+          onSendMessage={onSendMessage}
+          onSendThinkMessage={onSendThinkMessage}
+          onSetNick={onSetNick}
+          onRemoveLast={onRemoveLast}
+        />
+      </InputContainer>
+    </ChatContainer>
+  )
+}
+
+const userIdShape = PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.number,
+])
+const userShape = PropTypes.shape({
+  id: userIdShape.isRequired,
+  nickname: PropTypes.string,
+})
+
+ChatInterface.propTypes = {
+  chattingWith: userShape.isRequired,
+  user: userShape.isRequired,
+
+  messages: PropTypes.arrayOf(PropTypes.shape({
+    userId: userIdShape,
+    message: PropTypes.string,
+  })),
+  onSendMessage: PropTypes.func,
+  onSendThinkMessage: PropTypes.func,
+  onSetNick: PropTypes.func,
+  onRemoveLast: PropTypes.func,
+}
+
+ChatInterface.defaultProps = {
+  messages: [],
+  onSendMessage: noop,
+  onSendThinkMessage: noop,
+  onSetNick: noop,
+  onRemoveLast: noop,
+}
+
+export default ChatInterface
