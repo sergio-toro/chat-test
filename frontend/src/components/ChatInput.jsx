@@ -61,13 +61,20 @@ export default class ChatInput extends React.Component {
 
   handleChange = (event) => {
     this.setState({
-      message: event.target.value.trim()
+      message: event.target.value
     })
+  }
+
+  handleKeyUp = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      this.handleSubmit()
+    }
   }
 
   handleSubmit = () => {
     const { onSendMessage, onSendThinkMessage, onSetNick, onRemoveLast } = this.props
-    const { message } = this.state
+    const message = this.state.message.trim()
 
     switch (true) {
       case startsWith(message, '/nick '):
@@ -94,8 +101,10 @@ export default class ChatInput extends React.Component {
       <ChatInputContainer>
         <StyledTextarea
           name="message"
+          value={message}
           placeholder="Send a message..."
           onChange={this.handleChange}
+          onKeyUp={this.handleKeyUp}
         />
         <SendButton
           disabled={message.length === 0}
