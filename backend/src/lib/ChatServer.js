@@ -15,9 +15,8 @@ module.exports = class ChatServer {
   }
 
   onClientConnected (client) {
-    this.log('User connected', client.id)
-
     if (this.clients.length >= 2) {
+      this.log('User hit max_connections', client.id, this.clients)
       client.emit('max_connections')
       return client.disconnect(true)
     }
@@ -26,6 +25,8 @@ module.exports = class ChatServer {
 
     this.io.sockets.emit('clients', this.clients)
     client.emit('messages', this.messages)
+
+    this.log('User connected', client.id, this.clients)
   }
 
   onClientDisconnected (client) {
