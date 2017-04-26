@@ -1,4 +1,5 @@
 const socketIo = require('socket.io')
+const { uniqueId, findLast } = require('lodash')
 
 module.exports = class ChatServer {
 
@@ -13,7 +14,8 @@ module.exports = class ChatServer {
       socket.on('disconnect', this.handleClientDisconnected.bind(this, socket))
 
       socket.on('nickname', this.handleSetNickname.bind(this, socket))
-      socket.on('message', this.handleMessage.bind(this, socket))
+      socket.on('message', this.handleNewMessage.bind(this, socket))
+      socket.on('remove', this.handleRemoveMessage.bind(this, socket))
     })
   }
 
@@ -55,10 +57,11 @@ module.exports = class ChatServer {
     this.io.sockets.emit('clients', this.clients)
   }
 
-  handleMessage (client, { message, modifiers }, ackFn) {
+  handleNewMessage (client, { message, modifiers }, ackFn) {
     this.log('User sent message', client.id, message, modifiers)
 
     const newMessage = {
+      id: uniqueId(`msg-${client.id}-`),
       message,
       modifiers,
       userId: client.id,
@@ -68,6 +71,19 @@ module.exports = class ChatServer {
     ackFn(newMessage)
 
     client.broadcast.emit('message', newMessage)
+  }
+
+  handleRemoveMessage (client, message, ackFn) {
+    this.log('User removes message', client.id, message.id, message.userId, message.userId !== client.id)
+
+    if (message.userId !== client.id) {
+      return
+    }
+
+    this.messages = this.messages.filter(({ id }) => id !== message.id)
+    ackFn(message)
+
+    client.broadcast.emit('remove', message)
   }
 
   log (...args) {

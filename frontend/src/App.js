@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import io from 'socket.io-client'
-import { find, get } from 'lodash'
+import { find, get, findLast } from 'lodash'
 
 import ChatInterface from './components/ChatInterface'
 
@@ -23,18 +23,11 @@ export default class App extends Component {
     this.socket.on('connect', (arg) => {
       console.log('--> Socket.io connected', this.socket.id)
     })
-    this.socket.on('disconnect', (arg) => {
-      console.log('--> Socket.io disconnect', arg)
-      this.setState({ messages: [], clients: [] })
-    })
-
-    this.socket.on('clients', (data) => {
-      console.log('--> Socket.io clients:', data)
-      this.setState({ clients: data })
-    })
+    this.socket.on('disconnect', this.onDisconnect)
+    this.socket.on('clients', this.onInitClients)
     this.socket.on('messages', this.onInitMessages)
-
     this.socket.on('message', this.onNewMessage)
+    this.socket.on('remove', this.onRemoveMessage)
 
     this.socket.on('max_connections', () => {
       console.warn('--> Socket.io cannot connect due to full chat room')
@@ -43,9 +36,27 @@ export default class App extends Component {
     })
   }
 
+  onDisconnect = () => {
+    console.log('--> Socket.io disconnect')
+    this.setState({ messages: [], clients: [] })
+  }
+
+  onInitClients = (clients) => {
+    console.log('--> Socket.io clients', clients)
+    this.setState({ clients })
+  }
+
   onInitMessages = (messages) => {
     console.log('--> Socket.io messages', messages)
     this.setState({ messages })
+  }
+
+  onRemoveMessage = (message) => {
+    console.log('--> Socket.io remove message', message)
+    const { messages } = this.state
+    this.setState({
+      messages: messages.filter(({ id }) => id !== message.id),
+    })
   }
 
   onNewMessage = (message) => {
@@ -62,17 +73,11 @@ export default class App extends Component {
   }
 
   handleSendMessage = (message) => {
-    this.handleEmitMessage({
-      message,
-      modifiers: [],
-    })
+    this.handleEmitMessage({ message, modifiers: [] })
   }
 
   handleSendThinkMessage = (message) => {
-    this.handleEmitMessage({
-      message,
-      modifiers: ['think'],
-    })
+    this.handleEmitMessage({ message, modifiers: ['think'] })
   }
 
   handleSetNick = (nickname) => {
@@ -81,7 +86,12 @@ export default class App extends Component {
   }
 
   handleRemoveLast = (data) => {
-    console.log('remove last', data)
+    const { messages } = this.state
+    const message = findLast(messages, { userId: this.socket.id })
+    if (message) {
+      console.log('--> Socket.io remove last message', message)
+      this.socket.emit('remove', message, this.onRemoveMessage)
+    }
   }
 
   render() {
