@@ -94,7 +94,8 @@ export default class App extends Component {
       const newTimeout = countdown.timeout - 1
 
       if (newTimeout === 0) {
-        window.location = countdown.url;
+        clearInterval(intervalId)
+        window.location = countdown.url
       }
 
       this.setState({
