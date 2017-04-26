@@ -45,6 +45,7 @@ export default class App extends Component {
       messages: [],
       clients: [],
       countdown: null,
+      isTyping: false,
     }
   }
 
@@ -60,6 +61,7 @@ export default class App extends Component {
     this.socket.on('message', this.onNewMessage)
     this.socket.on('remove', this.onRemoveMessage)
     this.socket.on('countdown', this.onCountdown)
+    this.socket.on('typing', this.onIsTyping)
 
     this.socket.on('max_connections', () => {
       console.warn('--> Socket.io cannot connect due to full chat room')
@@ -109,6 +111,11 @@ export default class App extends Component {
     })
   }
 
+  onIsTyping = (isTyping) => {
+    console.log('--> Socket.io user is typing', isTyping)
+    this.setState({ isTyping })
+  }
+
   onNewMessage = (message) => {
     console.log('--> Socket.io message received', message)
     const { messages } = this.state
@@ -141,8 +148,13 @@ export default class App extends Component {
     this.socket.emit('countdown', data)
   }
 
+  handleIsTyping = (isTyping) => {
+    console.log('--> Socket.io send isTyping', isTyping)
+    this.socket.emit('typing', isTyping)
+  }
+
   render() {
-    const { messages, clients, countdown } = this.state
+    const { messages, clients, countdown, isTyping } = this.state
 
     const user = find(clients, { id: get(this.socket, 'id') })
     const [ chattingWith ] = clients.filter(client => client.id !== get(user, 'id'))
@@ -157,11 +169,13 @@ export default class App extends Component {
           chattingWith={chattingWith}
           user={user}
           messages={messages}
+          isTyping={isTyping}
 
           onSendMessage={this.handleSendMessage}
           onSetNick={this.handleSetNick}
           onRemoveLast={this.handleRemoveLast}
           onCountdown={this.handleCountdown}
+          onIsTyping={this.handleIsTyping}
         />
 
         {countdown && (
