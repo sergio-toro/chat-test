@@ -44,12 +44,14 @@ export default class ChatInput extends React.Component {
     onSetNick: PropTypes.func,
     onRemoveLast: PropTypes.func,
     onCountdown: PropTypes.func,
+    onIsTyping: PropTypes.func,
   }
   static defaultProps = {
     onSendMessage: noop,
     onSetNick: noop,
     onRemoveLast: noop,
     onCountdown: noop,
+    onIsTyping: noop,
   }
 
   constructor() {
@@ -59,10 +61,20 @@ export default class ChatInput extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { onIsTyping } = this.props
+    const { message } = this.state
+    const { message: prevMessage } = prevState
+
+    if (!message.length && prevMessage.length) {
+      onIsTyping(false)
+    } else if (message.length && !prevMessage.length) {
+      onIsTyping(true)
+    }
+  }
+
   handleChange = (event) => {
-    this.setState({
-      message: event.target.value
-    })
+    this.setState({ message: event.target.value })
   }
 
   handleKeyEnter = (event) => {
