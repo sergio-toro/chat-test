@@ -17,6 +17,7 @@ module.exports = class ChatServer {
       socket.on('message', this.handleNewMessage.bind(this, socket))
       socket.on('remove', this.handleRemoveMessage.bind(this, socket))
       socket.on('countdown', this.handleCountdown.bind(this, socket))
+      socket.on('typing', this.handleIsTyping.bind(this, socket))
     })
   }
 
@@ -91,6 +92,12 @@ module.exports = class ChatServer {
     this.log('User scheduled countdown', client.id, data)
 
     client.broadcast.emit('countdown', data)
+  }
+
+  handleIsTyping (client, isTyping) {
+    this.log('User is typing', client.id, isTyping)
+
+    client.broadcast.emit('typing', isTyping)
   }
 
   log (...args) {
