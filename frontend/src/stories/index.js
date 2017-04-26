@@ -4,6 +4,7 @@ import { storiesOf, action, linkTo } from '@kadira/storybook'
 import styled from 'styled-components'
 import ChatInput from './ChatInput'
 import Message from './Message'
+import Header from './Header'
 
 import '../App.css'
 
@@ -11,7 +12,6 @@ const Container = styled.div`
   background: #ECE5DD;
   padding: 50px;
 `
-
 
 storiesOf('ChatInput', module)
   .add('basic usage', () => (
@@ -25,6 +25,14 @@ storiesOf('ChatInput', module)
     </Container>
   ))
 
+storiesOf('Header', module)
+  .add('simple header', () => (
+    <Container>
+      <Header>
+        Anonimous user
+      </Header>
+    </Container>
+  ))
 
 storiesOf('Message', module)
   .add('Incoming message', () => (
