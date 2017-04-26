@@ -16,6 +16,7 @@ module.exports = class ChatServer {
       socket.on('nickname', this.handleSetNickname.bind(this, socket))
       socket.on('message', this.handleNewMessage.bind(this, socket))
       socket.on('remove', this.handleRemoveMessage.bind(this, socket))
+      socket.on('update', this.handleUpdateMessage.bind(this, socket))
       socket.on('countdown', this.handleCountdown.bind(this, socket))
       socket.on('typing', this.handleIsTyping.bind(this, socket))
     })
@@ -86,6 +87,19 @@ module.exports = class ChatServer {
     ackFn(message)
 
     client.broadcast.emit('remove', message)
+  }
+
+  handleUpdateMessage (client, message, ackFn) {
+    this.log('User updates message', client.id, message.id, message.userId, message.userId !== client.id)
+
+    if (message.userId !== client.id) {
+      return
+    }
+
+    this.messages = this.messages.map((msg) => (msg.id === message.id) ? message : msg),
+    ackFn(message)
+
+    client.broadcast.emit('update', message)
   }
 
   handleCountdown (client, data) {
