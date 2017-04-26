@@ -2,10 +2,10 @@ import React from 'react'
 import { storiesOf, action, linkTo } from '@kadira/storybook'
 
 import styled from 'styled-components'
-import ChatInput from './ChatInput'
-import Message from './Message'
-import Header from './Header'
-import ChatInterface from './ChatInterface'
+import ChatInput from '../components/ChatInput'
+import Message from '../components/Message'
+import Header from '../components/Header'
+import ChatInterface from '../components/ChatInterface'
 
 import '../App.css'
 

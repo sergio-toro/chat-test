@@ -9,12 +9,16 @@ import ChatInput from './ChatInput'
 const ChatContainer = styled.div`
   position: relative;
   background: #ECE5DD;
+  height: 100%;
 `
 
 const MessagesContainer = styled.div`
   position: relative;
   padding: 10px;
-  height: calc(100% - 38px - 80px);
+  // 38px header height
+  // 80px chat input height
+  // 20px message container padding
+  height: calc(100% - 38px - 80px - 20px);
 `
 const InputContainer = styled.div`
   padding: 10px;
