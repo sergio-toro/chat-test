@@ -1,5 +1,5 @@
 const socketIo = require('socket.io')
-const { uniqueId, findLast } = require('lodash')
+const { find, uniqueId, findLast } = require('lodash')
 
 module.exports = class ChatServer {
 
@@ -76,9 +76,10 @@ module.exports = class ChatServer {
     client.broadcast.emit('message', newMessage)
   }
 
-  handleRemoveMessage (client, message, ackFn) {
-    this.log('User removes message', client.id, message.id, message.userId, message.userId !== client.id)
+  handleRemoveMessage (client, deletedMessage, ackFn) {
+    this.log('User removes message', client.id, deletedMessage.id)
 
+    const message = find(this.messages, { id: deletedMessage.id })
     if (message.userId !== client.id) {
       return
     }
@@ -89,17 +90,20 @@ module.exports = class ChatServer {
     client.broadcast.emit('remove', message)
   }
 
-  handleUpdateMessage (client, message, ackFn) {
-    this.log('User updates message', client.id, message.id, message.userId, message.userId !== client.id)
+  handleUpdateMessage (client, updatedMessage, ackFn) {
+    this.log('User updates message', client.id, updatedMessage.id)
 
+    const message = find(this.messages, { id: updatedMessage.id })
     if (message.userId !== client.id) {
       return
     }
 
-    this.messages = this.messages.map((msg) => (msg.id === message.id) ? message : msg),
-    ackFn(message)
+    this.messages = this.messages.map(
+      (msg) => (msg.id === message.id) ? updatedMessage : msg
+    )
+    ackFn(updatedMessage)
 
-    client.broadcast.emit('update', message)
+    client.broadcast.emit('update', updatedMessage)
   }
 
   handleCountdown (client, data) {
