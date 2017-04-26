@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import io from 'socket.io-client'
-// import { find, get } from 'lodash'
+import { find, get } from 'lodash'
 
 import ChatInterface from './components/ChatInterface'
 
@@ -25,10 +25,12 @@ export default class App extends Component {
     })
     this.socket.on('disconnect', (arg) => {
       console.log('--> Socket.io disconnect', arg)
+      this.setState({ messages: [], clients: [] })
     })
 
     this.socket.on('clients', (data) => {
       console.log('--> Socket.io clients:', data)
+      this.setState({ clients: data })
     })
     this.socket.on('messages', (data) => {
       console.log('--> Socket.io messages:', data)
@@ -62,11 +64,19 @@ export default class App extends Component {
   }
 
   render() {
-    const { messages } = this.state
+    const { messages, clients } = this.state
+
+    const user = find(clients, { id: get(this.socket, 'id') })
+    const [ chattingWith ] = clients.filter(client => client.id !== get(user, 'id'))
+
+    if (!user || !chattingWith) {
+      return (<div>Waiting users to join the chat....</div>)
+    }
+
     return (
       <ChatInterface
-        chattingWith={{ id: 2, nickname: 'Hola mundo!' }}
-        user={{ id: 1, nickname: null }}
+        chattingWith={chattingWith}
+        user={user}
         messages={messages}
 
         onSendMessage={this.handleSendMessage}
