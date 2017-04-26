@@ -36,7 +36,10 @@ module.exports = class ChatServer {
     this.log('User disconnected', client.id)
 
     this.clients = this.clients.filter(({ id }) => id !== client.id)
+    this.messages = this.messages.filter(({ userId }) => userId !== client.id)
+
     this.io.sockets.emit('clients', this.clients)
+    this.io.sockets.emit('messages', this.messages)
   }
 
   handleSetNickname (client, nickname) {
