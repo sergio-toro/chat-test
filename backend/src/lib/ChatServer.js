@@ -11,6 +11,8 @@ module.exports = class ChatServer {
       this.onClientConnected(socket)
 
       socket.on('disconnect', this.onClientDisconnected.bind(this, socket))
+
+      socket.on('nickname', this.onSetNickname.bind(this, socket))
     })
   }
 
@@ -33,6 +35,19 @@ module.exports = class ChatServer {
     this.log('User disconnected', client.id)
 
     this.clients = this.clients.filter(({ id }) => id !== client.id)
+    this.io.sockets.emit('clients', this.clients)
+  }
+
+  onSetNickname (client, nickname) {
+    this.log('User set nickname', client.id, nickname)
+
+    this.clients = this.clients.map((user) => {
+      if (user.id === client.id) {
+        user.nickname = nickname
+      }
+      return user
+    })
+
     this.io.sockets.emit('clients', this.clients)
   }
 

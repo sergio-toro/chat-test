@@ -51,12 +51,9 @@ export default class App extends Component {
     console.log('send think message', data)
   }
 
-  handleSetNick = (data) => {
-    console.log('set nickname', data)
-  }
-
-  handleSetNick = (data) => {
-    console.log('set nickname', data)
+  handleSetNick = (nickname) => {
+    console.log('--> Socket.io set nickname', nickname)
+    this.socket.emit('nickname', nickname)
   }
 
   handleRemoveLast = (data) => {
