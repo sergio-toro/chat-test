@@ -1,10 +1,40 @@
 import React, { Component } from 'react'
 import io from 'socket.io-client'
 import { find, get, findLast } from 'lodash'
+import styled from 'styled-components'
 
 import ChatInterface from './components/ChatInterface'
+import clock from './assets/clock.png'
 
 import './App.css'
+
+const AppContainer = styled.div`
+  height: 100%;
+  position: relative;
+`
+
+const CountdownImage = styled.div`
+  position: absolute;
+  left: 50px;
+  top: calc(50% - 100px);
+  background: #ECE5DD;
+  padding: 25px;
+  box-shadow: -1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  border: 2px solid #075E54;
+  border-radius: 15px;
+
+  img {
+    width: 100px;
+  }
+
+  span, strong {
+    font-size: 22px;
+  }
+
+  strong {
+    font-weight: bold;
+  }
+`
 
 export default class App extends Component {
   constructor (props) {
@@ -14,6 +44,7 @@ export default class App extends Component {
     this.state = {
       messages: [],
       clients: [],
+      countdown: null,
     }
   }
 
@@ -28,6 +59,7 @@ export default class App extends Component {
     this.socket.on('messages', this.onInitMessages)
     this.socket.on('message', this.onNewMessage)
     this.socket.on('remove', this.onRemoveMessage)
+    this.socket.on('countdown', this.onCountdown)
 
     this.socket.on('max_connections', () => {
       console.warn('--> Socket.io cannot connect due to full chat room')
@@ -49,6 +81,24 @@ export default class App extends Component {
   onInitMessages = (messages) => {
     console.log('--> Socket.io messages', messages)
     this.setState({ messages })
+  }
+
+  onCountdown = (data) => {
+    console.log('--> Socket.io countdown', data)
+    this.setState({ countdown: data })
+
+    const intervalId = setInterval(() => {
+      const { countdown } = this.state
+      const newTimeout = countdown.timeout - 1
+
+      if (newTimeout === 0) {
+        window.location = countdown.url;
+      }
+
+      this.setState({
+        countdown: { ...countdown, timeout: newTimeout }
+      })
+    }, 1000)
   }
 
   onRemoveMessage = (message) => {
@@ -86,8 +136,13 @@ export default class App extends Component {
     }
   }
 
+  handleCountdown = (data) => {
+    console.log('--> Socket.io countdown scheduled', data)
+    this.socket.emit('countdown', data)
+  }
+
   render() {
-    const { messages, clients } = this.state
+    const { messages, clients, countdown } = this.state
 
     const user = find(clients, { id: get(this.socket, 'id') })
     const [ chattingWith ] = clients.filter(client => client.id !== get(user, 'id'))
@@ -97,15 +152,25 @@ export default class App extends Component {
     }
 
     return (
-      <ChatInterface
-        chattingWith={chattingWith}
-        user={user}
-        messages={messages}
+      <AppContainer>
+        <ChatInterface
+          chattingWith={chattingWith}
+          user={user}
+          messages={messages}
 
-        onSendMessage={this.handleSendMessage}
-        onSetNick={this.handleSetNick}
-        onRemoveLast={this.handleRemoveLast}
-      />
+          onSendMessage={this.handleSendMessage}
+          onSetNick={this.handleSetNick}
+          onRemoveLast={this.handleRemoveLast}
+          onCountdown={this.handleCountdown}
+        />
+
+        {countdown && (
+          <CountdownImage>
+            <img src={clock} alt="countdown" />
+            <span>Redirecting to <strong>{countdown.url}</strong> in <strong>{countdown.timeout}</strong> seconds...</span>
+          </CountdownImage>
+        )}
+      </AppContainer>
     )
   }
 }

@@ -43,11 +43,13 @@ export default class ChatInput extends React.Component {
     onSendMessage: PropTypes.func,
     onSetNick: PropTypes.func,
     onRemoveLast: PropTypes.func,
+    onCountdown: PropTypes.func,
   }
   static defaultProps = {
     onSendMessage: noop,
     onSetNick: noop,
     onRemoveLast: noop,
+    onCountdown: noop,
   }
 
   constructor() {
@@ -71,7 +73,7 @@ export default class ChatInput extends React.Component {
   }
 
   handleSubmit = () => {
-    const { onSendMessage, onSetNick, onRemoveLast } = this.props
+    const { onSendMessage, onSetNick, onRemoveLast, onCountdown } = this.props
     const message = this.state.message.trim()
 
     if (!message.length) {
@@ -87,6 +89,13 @@ export default class ChatInput extends React.Component {
           message: message.replace('/think ', ''),
           modifiers: ['think']
         })
+        break;
+      case startsWith(message, '/countdown '):
+        const regex = /^\/countdown (\d) (https?:\/\/.{3,})$/g
+        const [ , timeout, url ] = regex.exec(message)
+        if (timeout && url) {
+          onCountdown({ timeout, url })
+        }
         break;
       case startsWith(message, '/highlight '):
         onSendMessage({

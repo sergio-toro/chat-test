@@ -16,6 +16,7 @@ module.exports = class ChatServer {
       socket.on('nickname', this.handleSetNickname.bind(this, socket))
       socket.on('message', this.handleNewMessage.bind(this, socket))
       socket.on('remove', this.handleRemoveMessage.bind(this, socket))
+      socket.on('countdown', this.handleCountdown.bind(this, socket))
     })
   }
 
@@ -84,6 +85,12 @@ module.exports = class ChatServer {
     ackFn(message)
 
     client.broadcast.emit('remove', message)
+  }
+
+  handleCountdown (client, data) {
+    this.log('User scheduled countdown', client.id, data)
+
+    client.broadcast.emit('countdown', data)
   }
 
   log (...args) {

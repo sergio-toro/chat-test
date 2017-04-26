@@ -56,6 +56,7 @@ export default class ChatInterface extends React.Component {
     onSendMessage: PropTypes.func,
     onSetNick: PropTypes.func,
     onRemoveLast: PropTypes.func,
+    onCountdown: PropTypes.func,
   }
 
   static defaultProps = {
@@ -63,6 +64,7 @@ export default class ChatInterface extends React.Component {
     onSendMessage: noop,
     onSetNick: noop,
     onRemoveLast: noop,
+    onCountdown: noop,
   }
   constructor (props) {
     super(props)
@@ -88,6 +90,7 @@ export default class ChatInterface extends React.Component {
       onSendMessage,
       onSetNick,
       onRemoveLast,
+      onCountdown,
     } = this.props
 
     return (
@@ -110,6 +113,7 @@ export default class ChatInterface extends React.Component {
             onSendMessage={onSendMessage}
             onSetNick={onSetNick}
             onRemoveLast={onRemoveLast}
+            onCountdown={onCountdown}
           />
         </InputContainer>
       </ChatContainer>
