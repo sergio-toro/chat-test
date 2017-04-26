@@ -38,10 +38,11 @@ const ChatInterface = (props) => {
     <ChatContainer>
       <Header>{chattingWith.nickname || 'Unknown user'}</Header>
       <MessagesContainer>
-        {messages.map(({ message, userId }, index) => (
+        {messages.map(({ message, userId, modifiers }, index) => (
           <Message
             key={index}
             isOutgoing={userId === user.id}
+            modifiers={modifiers}
           >
             {message}
           </Message>
@@ -75,6 +76,9 @@ ChatInterface.propTypes = {
   messages: PropTypes.arrayOf(PropTypes.shape({
     userId: userIdShape,
     message: PropTypes.string,
+    modifiers: PropTypes.arrayOf(
+      PropTypes.oneOf(['think'])
+    ),
   })),
   onSendMessage: PropTypes.func,
   onSendThinkMessage: PropTypes.func,

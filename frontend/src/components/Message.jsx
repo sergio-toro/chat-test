@@ -59,11 +59,15 @@ const StyledMessage = styled.div`
       border-top: 17px solid #DCF8C6;
     }
   }
+
+  &.think {
+    color: #8a8a8a;
+  }
 `
 
-const Message = ({ children, isOutgoing }) => (
+const Message = ({ children, modifiers, isOutgoing }) => (
   <MessageContainer>
-    <StyledMessage className={isOutgoing && 'outgoing'}>
+    <StyledMessage className={[isOutgoing && 'outgoing', ...modifiers].join(' ')}>
       {children}
     </StyledMessage>
   </MessageContainer>
@@ -72,6 +76,9 @@ const Message = ({ children, isOutgoing }) => (
 Message.propTypes = {
   children: PropTypes.string.isRequired,
   isOutgoing: PropTypes.bool,
+  modifiers: PropTypes.arrayOf(
+    PropTypes.oneOf(['think'])
+  ),
 }
 
 Message.defaultProps = {
