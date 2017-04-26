@@ -5,6 +5,7 @@
   "author": "Sergio Toro <sergio.toro.castano@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^4.17.4",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "socket.io-client": "^1.7.3",
