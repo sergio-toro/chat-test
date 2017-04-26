@@ -65,7 +65,7 @@ export default class ChatInput extends React.Component {
     })
   }
 
-  handleKeyUp = (event) => {
+  handleKeyEnter = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault()
       this.handleSubmit()
@@ -75,6 +75,10 @@ export default class ChatInput extends React.Component {
   handleSubmit = () => {
     const { onSendMessage, onSendThinkMessage, onSetNick, onRemoveLast } = this.props
     const message = this.state.message.trim()
+
+    if (!message.length) {
+      return
+    }
 
     switch (true) {
       case startsWith(message, '/nick '):
@@ -104,7 +108,7 @@ export default class ChatInput extends React.Component {
           value={message}
           placeholder="Send a message..."
           onChange={this.handleChange}
-          onKeyUp={this.handleKeyUp}
+          onKeyDown={this.handleKeyEnter}
         />
         <SendButton
           disabled={message.length === 0}
