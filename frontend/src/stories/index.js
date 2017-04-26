@@ -19,7 +19,6 @@ storiesOf('ChatInput', module)
     <Container>
       <ChatInput
         onSendMessage={action('send message')}
-        onSendThinkMessage={action('send think message')}
         onSetNick={action('set nickname')}
         onRemoveLast={action('remove last')}
       />
@@ -69,6 +68,7 @@ storiesOf('ChatInterface', module)
         { userId: 1, message: 'Green Beer, right?' },
         { userId: 1, message: 'Sounds cool, let\'s go!' },
       ]}
+      isTyping={true}
 
       onSendMessage={action('send message')}
       onSendThinkMessage={action('send think message')}

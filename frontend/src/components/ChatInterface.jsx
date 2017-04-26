@@ -32,6 +32,16 @@ const MessagesEnd = styled.div`
 `
 
 
+const IsTypingMessage = styled.div`
+  position: absolute;
+  left: 22px;
+  top: calc(100% - 18px);
+  font-style: italic;
+  font-size: 12px;
+  color: #8a8a8a;
+`
+
+
 const userIdShape = PropTypes.oneOfType([
   PropTypes.string,
   PropTypes.number,
@@ -53,18 +63,22 @@ export default class ChatInterface extends React.Component {
         PropTypes.oneOf(['think', 'highlight'])
       ),
     })),
+    isTyping: PropTypes.bool,
     onSendMessage: PropTypes.func,
     onSetNick: PropTypes.func,
     onRemoveLast: PropTypes.func,
     onCountdown: PropTypes.func,
+    onIsTyping: PropTypes.func,
   }
 
   static defaultProps = {
     messages: [],
+    isTyping: false,
     onSendMessage: noop,
     onSetNick: noop,
     onRemoveLast: noop,
     onCountdown: noop,
+    onIsTyping: noop,
   }
   constructor (props) {
     super(props)
@@ -87,10 +101,12 @@ export default class ChatInterface extends React.Component {
       messages,
       chattingWith,
       user,
+      isTyping,
       onSendMessage,
       onSetNick,
       onRemoveLast,
       onCountdown,
+      onIsTyping,
     } = this.props
 
     return (
@@ -106,6 +122,7 @@ export default class ChatInterface extends React.Component {
               {message}
             </Message>
           ))}
+          {isTyping && <IsTypingMessage>User is typing...</IsTypingMessage>}
           <MessagesEnd ref={(el) => { this.messagesEndRef = el }}></MessagesEnd>
         </MessagesContainer>
         <InputContainer>
@@ -114,6 +131,7 @@ export default class ChatInterface extends React.Component {
             onSetNick={onSetNick}
             onRemoveLast={onRemoveLast}
             onCountdown={onCountdown}
+            onIsTyping={onIsTyping}
           />
         </InputContainer>
       </ChatContainer>
