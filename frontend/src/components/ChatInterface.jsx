@@ -59,14 +59,13 @@ export default class ChatInterface extends React.Component {
     messages: PropTypes.arrayOf(PropTypes.shape({
       userId: userIdShape,
       message: PropTypes.string,
-      modifiers: PropTypes.arrayOf(
-        PropTypes.oneOf(['think', 'highlight'])
-      ),
+      modifiers: PropTypes.array,
     })),
     isTyping: PropTypes.bool,
     onSendMessage: PropTypes.func,
     onSetNick: PropTypes.func,
     onRemoveLast: PropTypes.func,
+    onFadeLast: PropTypes.func,
     onCountdown: PropTypes.func,
     onIsTyping: PropTypes.func,
   }
@@ -77,6 +76,7 @@ export default class ChatInterface extends React.Component {
     onSendMessage: noop,
     onSetNick: noop,
     onRemoveLast: noop,
+    onFadeLast: noop,
     onCountdown: noop,
     onIsTyping: noop,
   }
@@ -105,6 +105,7 @@ export default class ChatInterface extends React.Component {
       onSendMessage,
       onSetNick,
       onRemoveLast,
+      onFadeLast,
       onCountdown,
       onIsTyping,
     } = this.props
@@ -130,6 +131,7 @@ export default class ChatInterface extends React.Component {
             onSendMessage={onSendMessage}
             onSetNick={onSetNick}
             onRemoveLast={onRemoveLast}
+            onFadeLast={onFadeLast}
             onCountdown={onCountdown}
             onIsTyping={onIsTyping}
           />

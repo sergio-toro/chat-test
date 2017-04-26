@@ -60,6 +60,7 @@ export default class App extends Component {
     this.socket.on('messages', this.onInitMessages)
     this.socket.on('message', this.onNewMessage)
     this.socket.on('remove', this.onRemoveMessage)
+    this.socket.on('update', this.onUpdateMessage)
     this.socket.on('countdown', this.onCountdown)
     this.socket.on('typing', this.onIsTyping)
 
@@ -112,6 +113,14 @@ export default class App extends Component {
     })
   }
 
+  onUpdateMessage = (message) => {
+    console.log('--> Socket.io remove message', message)
+    const { messages } = this.state
+    this.setState({
+      messages: messages.map((msg) => (msg.id === message.id) ? message : msg),
+    })
+  }
+
   onIsTyping = (isTyping) => {
     console.log('--> Socket.io user is typing', isTyping)
     this.setState({ isTyping })
@@ -141,6 +150,23 @@ export default class App extends Component {
     if (message) {
       console.log('--> Socket.io remove last message', message)
       this.socket.emit('remove', message, this.onRemoveMessage)
+    }
+  }
+
+  handleFadeLast = (data) => {
+    const { messages } = this.state
+    const message = findLast(messages, { userId: this.socket.id })
+    if (message) {
+      const updatedMessage = {
+        ...message,
+        modifiers: [ ...message.modifiers, 'fade' ],
+      }
+      console.log('--> Socket.io fade last message', updatedMessage)
+      this.socket.emit(
+        'update',
+        updatedMessage,
+        this.onUpdateMessage
+      )
     }
   }
 
@@ -175,6 +201,7 @@ export default class App extends Component {
           onSendMessage={this.handleSendMessage}
           onSetNick={this.handleSetNick}
           onRemoveLast={this.handleRemoveLast}
+          onFadeLast={this.handleFadeLast}
           onCountdown={this.handleCountdown}
           onIsTyping={this.handleIsTyping}
         />

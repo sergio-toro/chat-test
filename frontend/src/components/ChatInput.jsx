@@ -43,6 +43,7 @@ export default class ChatInput extends React.Component {
     onSendMessage: PropTypes.func,
     onSetNick: PropTypes.func,
     onRemoveLast: PropTypes.func,
+    onFadeLast: PropTypes.func,
     onCountdown: PropTypes.func,
     onIsTyping: PropTypes.func,
   }
@@ -50,6 +51,7 @@ export default class ChatInput extends React.Component {
     onSendMessage: noop,
     onSetNick: noop,
     onRemoveLast: noop,
+    onFadeLast: noop,
     onCountdown: noop,
     onIsTyping: noop,
   }
@@ -85,7 +87,7 @@ export default class ChatInput extends React.Component {
   }
 
   handleSubmit = () => {
-    const { onSendMessage, onSetNick, onRemoveLast, onCountdown } = this.props
+    const { onSendMessage, onSetNick, onRemoveLast, onCountdown, onFadeLast } = this.props
     const message = this.state.message.trim()
 
     if (!message.length) {
@@ -117,6 +119,9 @@ export default class ChatInput extends React.Component {
         break;
       case startsWith(message, '/oops'):
         onRemoveLast()
+        break;
+      case startsWith(message, '/fadelast'):
+        onFadeLast()
         break;
       default:
         onSendMessage({ message, modifiers: []})
