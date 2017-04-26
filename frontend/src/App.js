@@ -32,14 +32,9 @@ export default class App extends Component {
       console.log('--> Socket.io clients:', data)
       this.setState({ clients: data })
     })
-    this.socket.on('messages', (data) => {
-      console.log('--> Socket.io messages:', data)
-    })
+    this.socket.on('messages', this.onInitMessages)
 
-    this.socket.on('message', (message) => {
-      console.log('--> Socket.io message received', message)
-      this.onNewMessage(message)
-    })
+    this.socket.on('message', this.onNewMessage)
 
     this.socket.on('max_connections', () => {
       console.warn('--> Socket.io cannot connect due to full chat room')
@@ -48,7 +43,13 @@ export default class App extends Component {
     })
   }
 
+  onInitMessages = (messages) => {
+    console.log('--> Socket.io messages', messages)
+    this.setState({ messages })
+  }
+
   onNewMessage = (message) => {
+    console.log('--> Socket.io message received', message)
     const { messages } = this.state
     this.setState({
       messages: messages.concat([ message ]),
