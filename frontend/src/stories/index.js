@@ -3,6 +3,7 @@ import { storiesOf, action, linkTo } from '@kadira/storybook'
 
 import styled from 'styled-components'
 import ChatInput from './ChatInput'
+import Message from './Message'
 
 import '../App.css'
 
@@ -25,3 +26,23 @@ storiesOf('ChatInput', module)
   ))
 
 
+storiesOf('Message', module)
+  .add('Incoming message', () => (
+    <Container>
+      <Message>Hello Nick!</Message>
+    </Container>
+  ))
+  .add('Outgoing message', () => (
+    <Container>
+      <Message isOutgoing>Hey, what's up man? (smile)</Message>
+    </Container>
+  ))
+  .add('Conversation', () => (
+    <Container>
+      <Message isOutgoing>Hey, what's up man? (smile)</Message>
+      <Message>Oh it's you?</Message>
+      <Message isOutgoing>Do you want a beer?</Message>
+      <Message>Yep! Where do you want to go? Do you know that new place in the city center?</Message>
+      <Message isOutgoing>Green Beer, right? Sounds cool, let's go!</Message>
+    </Container>
+  ))
