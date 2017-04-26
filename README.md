@@ -9,5 +9,6 @@ Once you have installed docker and docker-compose you are available to use this 
 **Available commands**
 
 - `docker-compose up` runs the whole stack (the first time builds the project)
-- `docker-compose exec frontend npm run test` runs FE tests (first run docker-compose up in another terminal)
-- `docker-compose exec backend npm run test` runs BE tests (first run docker-compose up in another terminal)
+- `docker-compose exec frontend yarn run storybook` runs storybook to fast-develop components (first run docker-compose up in another terminal)
+- `docker-compose exec frontend yarn run test` runs FE tests (first run docker-compose up in another terminal)
+- `docker-compose exec backend yarn run test` runs BE tests (first run docker-compose up in another terminal)
