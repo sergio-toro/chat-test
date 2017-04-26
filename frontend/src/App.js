@@ -67,17 +67,9 @@ export default class App extends Component {
     })
   }
 
-  handleEmitMessage = (msgObject) => {
-    console.log('--> Socket.io send message', msgObject)
-    this.socket.emit('message', msgObject, this.onNewMessage)
-  }
-
   handleSendMessage = (message) => {
-    this.handleEmitMessage({ message, modifiers: [] })
-  }
-
-  handleSendThinkMessage = (message) => {
-    this.handleEmitMessage({ message, modifiers: ['think'] })
+    console.log('--> Socket.io send message', message)
+    this.socket.emit('message', message, this.onNewMessage)
   }
 
   handleSetNick = (nickname) => {
@@ -111,7 +103,6 @@ export default class App extends Component {
         messages={messages}
 
         onSendMessage={this.handleSendMessage}
-        onSendThinkMessage={this.handleSendThinkMessage}
         onSetNick={this.handleSetNick}
         onRemoveLast={this.handleRemoveLast}
       />

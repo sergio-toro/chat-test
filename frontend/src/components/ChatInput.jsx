@@ -41,13 +41,11 @@ export default class ChatInput extends React.Component {
 
   static propTypes = {
     onSendMessage: PropTypes.func,
-    onSendThinkMessage: PropTypes.func,
     onSetNick: PropTypes.func,
     onRemoveLast: PropTypes.func,
   }
   static defaultProps = {
     onSendMessage: noop,
-    onSendThinkMessage: noop,
     onSetNick: noop,
     onRemoveLast: noop,
   }
@@ -73,7 +71,7 @@ export default class ChatInput extends React.Component {
   }
 
   handleSubmit = () => {
-    const { onSendMessage, onSendThinkMessage, onSetNick, onRemoveLast } = this.props
+    const { onSendMessage, onSetNick, onRemoveLast } = this.props
     const message = this.state.message.trim()
 
     if (!message.length) {
@@ -85,13 +83,22 @@ export default class ChatInput extends React.Component {
         onSetNick(message.replace('/nick ', ''))
         break;
       case startsWith(message, '/think '):
-        onSendThinkMessage(message.replace('/think ', ''))
+        onSendMessage({
+          message: message.replace('/think ', ''),
+          modifiers: ['think']
+        })
+        break;
+      case startsWith(message, '/highlight '):
+        onSendMessage({
+          message: message.replace('/highlight ', ''),
+          modifiers: ['highlight']
+        })
         break;
       case startsWith(message, '/oops'):
         onRemoveLast()
         break;
       default:
-        onSendMessage(message)
+        onSendMessage({ message, modifiers: []})
         break;
     }
 

@@ -50,11 +50,10 @@ export default class ChatInterface extends React.Component {
       userId: userIdShape,
       message: PropTypes.string,
       modifiers: PropTypes.arrayOf(
-        PropTypes.oneOf(['think'])
+        PropTypes.oneOf(['think', 'highlight'])
       ),
     })),
     onSendMessage: PropTypes.func,
-    onSendThinkMessage: PropTypes.func,
     onSetNick: PropTypes.func,
     onRemoveLast: PropTypes.func,
   }
@@ -62,7 +61,6 @@ export default class ChatInterface extends React.Component {
   static defaultProps = {
     messages: [],
     onSendMessage: noop,
-    onSendThinkMessage: noop,
     onSetNick: noop,
     onRemoveLast: noop,
   }
@@ -88,7 +86,6 @@ export default class ChatInterface extends React.Component {
       chattingWith,
       user,
       onSendMessage,
-      onSendThinkMessage,
       onSetNick,
       onRemoveLast,
     } = this.props
@@ -111,7 +108,6 @@ export default class ChatInterface extends React.Component {
         <InputContainer>
           <ChatInput
             onSendMessage={onSendMessage}
-            onSendThinkMessage={onSendThinkMessage}
             onSetNick={onSetNick}
             onRemoveLast={onRemoveLast}
           />
