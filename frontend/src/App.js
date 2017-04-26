@@ -34,6 +34,7 @@ export default class App extends Component {
 
     this.socket.on('max_connections', () => {
       console.warn('--> Socket.io cannot connect due to full chat room')
+      window.alert('Sorry the chat room is full, try again later.')
     })
   }
 
