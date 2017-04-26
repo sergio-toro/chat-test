@@ -36,7 +36,7 @@ const ChatInterface = (props) => {
 
   return (
     <ChatContainer>
-      <Header>{chattingWith.nickname}</Header>
+      <Header>{chattingWith.nickname || 'Unknown user'}</Header>
       <MessagesContainer>
         {messages.map(({ message, userId }, index) => (
           <Message
