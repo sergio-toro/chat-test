@@ -105,9 +105,10 @@ export default class ChatInput extends React.Component {
         })
         break;
       case startsWith(message, '/countdown '):
-        const regex = /^\/countdown (\d) (https?:\/\/.{3,})$/g
-        const [ , timeout, url ] = regex.exec(message)
-        if (timeout && url) {
+        const regex = /^\/countdown (\d+) (https?:\/\/.{3,})$/g
+        const matches = regex.exec(message)
+        if (matches && matches.length === 3) {
+          const [ , timeout, url ] = matches
           onCountdown({ timeout, url })
         }
         break;
