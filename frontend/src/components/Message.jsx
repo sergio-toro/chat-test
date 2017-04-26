@@ -102,6 +102,7 @@ Message.propTypes = {
 
 Message.defaultProps = {
   isOutgoing: false,
+  modifiers: [],
 }
 
 export default Message
