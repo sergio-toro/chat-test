@@ -10,9 +10,10 @@ module.exports = class ChatServer {
     this.io.on('connection', (socket) => {
       this.onClientConnected(socket)
 
-      socket.on('disconnect', this.onClientDisconnected.bind(this, socket))
+      socket.on('disconnect', this.handleClientDisconnected.bind(this, socket))
 
-      socket.on('nickname', this.onSetNickname.bind(this, socket))
+      socket.on('nickname', this.handleSetNickname.bind(this, socket))
+      socket.on('message', this.handleMessage.bind(this, socket))
     })
   }
 
@@ -31,14 +32,14 @@ module.exports = class ChatServer {
     this.log('User connected', client.id, this.clients)
   }
 
-  onClientDisconnected (client) {
+  handleClientDisconnected (client) {
     this.log('User disconnected', client.id)
 
     this.clients = this.clients.filter(({ id }) => id !== client.id)
     this.io.sockets.emit('clients', this.clients)
   }
 
-  onSetNickname (client, nickname) {
+  handleSetNickname (client, nickname) {
     this.log('User set nickname', client.id, nickname)
 
     this.clients = this.clients.map((user) => {
@@ -49,6 +50,21 @@ module.exports = class ChatServer {
     })
 
     this.io.sockets.emit('clients', this.clients)
+  }
+
+  handleMessage (client, { message, modifiers }, ackFn) {
+    this.log('User sent message', client.id, message, modifiers)
+
+    const newMessage = {
+      message,
+      modifiers,
+      userId: client.id,
+    }
+
+    this.messages = this.messages.concat([ newMessage ])
+    ackFn(newMessage)
+
+    client.broadcast.emit('message', newMessage)
   }
 
   log (...args) {

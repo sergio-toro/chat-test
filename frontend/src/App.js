@@ -36,6 +36,11 @@ export default class App extends Component {
       console.log('--> Socket.io messages:', data)
     })
 
+    this.socket.on('message', (message) => {
+      console.log('--> Socket.io message received', message)
+      this.onNewMessage(message)
+    })
+
     this.socket.on('max_connections', () => {
       console.warn('--> Socket.io cannot connect due to full chat room')
       window.alert('Sorry the chat room is full, try again later.')
@@ -43,12 +48,30 @@ export default class App extends Component {
     })
   }
 
-  handleSendMessage = (message) => {
-    console.log('send message', message)
+  onNewMessage = (message) => {
+    const { messages } = this.state
+    this.setState({
+      messages: messages.concat([ message ]),
+    })
   }
 
-  handleSendThinkMessage = (data) => {
-    console.log('send think message', data)
+  handleEmitMessage = (msgObject) => {
+    console.log('--> Socket.io send message', msgObject)
+    this.socket.emit('message', msgObject, this.onNewMessage)
+  }
+
+  handleSendMessage = (message) => {
+    this.handleEmitMessage({
+      message,
+      modifiers: [],
+    })
+  }
+
+  handleSendThinkMessage = (message) => {
+    this.handleEmitMessage({
+      message,
+      modifiers: ['think'],
+    })
   }
 
   handleSetNick = (nickname) => {
