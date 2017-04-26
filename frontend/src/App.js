@@ -1,9 +1,42 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import io from 'socket.io-client'
 import ChatInterface from './components/ChatInterface'
 
 import './App.css'
 
 export default class App extends Component {
+  constructor (props) {
+    super(props)
+
+    this.socket = null
+    this.state = {
+      messages: [],
+      clients: [],
+    }
+  }
+
+  componentDidMount () {
+    this.socket = io(process.env.REACT_APP_CHAT_URL)
+
+    this.socket.on('connect', (arg) => {
+      console.log('--> Socket.io connected', this.socket)
+    })
+    this.socket.on('disconnect', (arg) => {
+      console.log('--> Socket.io disconnect', arg)
+    })
+
+    this.socket.on('clients', (data) => {
+      console.log('--> Socket.io clients:', data)
+    })
+    this.socket.on('messages', (data) => {
+      console.log('--> Socket.io messages:', data)
+    })
+
+    this.socket.on('max_connections', () => {
+      console.warn('--> Socket.io cannot connect due to full chat room')
+    })
+  }
+
   render() {
     return (
       <ChatInterface
