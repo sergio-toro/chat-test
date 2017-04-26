@@ -1,8 +1,5 @@
 import React from 'react'
 import { storiesOf, action, linkTo } from '@kadira/storybook'
-import Button from './Button'
-import Welcome from './Welcome'
-
 
 import styled from 'styled-components'
 import ChatInput from './ChatInput'
@@ -14,10 +11,6 @@ const Container = styled.div`
   padding: 50px;
 `
 
-storiesOf('Welcome', module)
-  .add('to Storybook', () => (
-    <Welcome showApp={linkTo('Button')}/>
-  ));
 
 storiesOf('ChatInput', module)
   .add('basic usage', () => (
@@ -31,11 +24,4 @@ storiesOf('ChatInput', module)
     </Container>
   ))
 
-storiesOf('Button', module)
-  .add('with text', () => (
-    <Button onClick={action('clicked')}>Hello Button</Button>
-  ))
-  .add('with some emoji', () => (
-    <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>
-  ));
 
