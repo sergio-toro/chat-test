@@ -71,14 +71,20 @@ export default class ChatInput extends React.Component {
 
     switch (true) {
       case startsWith(message, '/nick '):
-        return onSetNick(message.replace('/nick ', ''))
+        onSetNick(message.replace('/nick ', ''))
+        break;
       case startsWith(message, '/think '):
-        return onSendThinkMessage(message.replace('/think ', ''))
+        onSendThinkMessage(message.replace('/think ', ''))
+        break;
       case startsWith(message, '/oops'):
-        return onRemoveLast()
+        onRemoveLast()
+        break;
       default:
-        return onSendMessage(message)
+        onSendMessage(message)
+        break;
     }
+
+    this.setState({ message: '' })
   }
 
   render() {
