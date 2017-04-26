@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import io from 'socket.io-client'
+// import { find, get } from 'lodash'
+
 import ChatInterface from './components/ChatInterface'
 
 import './App.css'
@@ -19,7 +21,7 @@ export default class App extends Component {
     this.socket = io(process.env.REACT_APP_CHAT_URL)
 
     this.socket.on('connect', (arg) => {
-      console.log('--> Socket.io connected', this.socket)
+      console.log('--> Socket.io connected', this.socket.id)
     })
     this.socket.on('disconnect', (arg) => {
       console.log('--> Socket.io disconnect', arg)
@@ -35,27 +37,42 @@ export default class App extends Component {
     this.socket.on('max_connections', () => {
       console.warn('--> Socket.io cannot connect due to full chat room')
       window.alert('Sorry the chat room is full, try again later.')
+      this.socket = null
     })
   }
 
+  handleSendMessage = (message) => {
+    console.log('send message', message)
+  }
+
+  handleSendThinkMessage = (data) => {
+    console.log('send think message', data)
+  }
+
+  handleSetNick = (data) => {
+    console.log('set nickname', data)
+  }
+
+  handleSetNick = (data) => {
+    console.log('set nickname', data)
+  }
+
+  handleRemoveLast = (data) => {
+    console.log('remove last', data)
+  }
+
   render() {
+    const { messages } = this.state
     return (
       <ChatInterface
         chattingWith={{ id: 2, nickname: 'Hola mundo!' }}
         user={{ id: 1, nickname: null }}
-        messages={[
-          { userId: 1, message: 'Hey, what\'s up man? (smile)' },
-          { userId: 2, message: 'Oh it\'s you?' },
-          { userId: 1, message: 'Do you want a beer?' },
-          { userId: 2, message: 'Yep! Where do you want to go? Do you know that new place in the city center?' },
-          { userId: 1, message: 'Green Beer, right?' },
-          { userId: 1, message: 'Sounds cool, let\'s go!' },
-        ]}
+        messages={messages}
 
-        onSendMessage={(data) => console.log('send message', data)}
-        onSendThinkMessage={(data) => console.log('send think message', data)}
-        onSetNick={(data) => console.log('set nickname', data)}
-        onRemoveLast={(data) => console.log('remove last', data)}
+        onSendMessage={this.handleSendMessage}
+        onSendThinkMessage={this.handleSendThinkMessage}
+        onSetNick={this.handleSetNick}
+        onRemoveLast={this.handleRemoveLast}
       />
     )
   }
